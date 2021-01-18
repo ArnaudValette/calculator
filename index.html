@@ -172,6 +172,10 @@ html, body{
             display: grid;
             grid-template-columns: width;
             grid-template-rows:height/2 height/2;
+            text-overflow: clip;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+  overflow: hidden;
             
             
         }
@@ -185,6 +189,10 @@ html, body{
 vertical-align: middle;
 color:rgb(61, 29, 2);
 line-height: 50px; 
+text-overflow: clip;
+text-overflow: ellipsis;
+white-space: nowrap;
+  overflow: hidden;
 
         }
         #digit{
@@ -239,6 +247,36 @@ line-height: 50px;
             background-color:mediumvioletred;
             grid-column:2/6;
         }
+
+        @keyframes destruction{
+            33%{
+                background-color: blue;
+                transform: translateX(5px);
+                transform: translateY(-5px);
+                
+            }
+            66%{
+                background-color:red;
+                transform: translateX(-5px);
+                transform: translateY(5px);
+            }
+            99%{
+                background-color:green;
+                transform: translateX(5px);
+                transform: translateY(5px);
+            }
+        }
+
+        @keyframes destruction2{
+            50%{
+                background-color:white;
+            }
+
+            100%{
+                background-color:black;
+            }
+
+        }
     </style>
 
     <script>
@@ -255,7 +293,7 @@ line-height: 50px;
 
 
 
-
+        let result;
         let num = [];
         let total;
         
@@ -294,9 +332,12 @@ line-height: 50px;
            array = checkDivide(array);
             array = checkAdd(array);
             array = checkSub(array);
+            
 
             return array
         }
+
+   
 
         function checkComma(array){
             let mustRun = 1;
@@ -353,10 +394,17 @@ line-height: 50px;
             let mustRun = 1;
             while(mustRun >= 0){
                 mustRun=array.indexOf("/");
+                if(array[mustRun+1] == "0"){
+                    array.splice(mustRun+1,1, "de");
+                    
+                }
+                else{
                 if(mustRun >= 0) {
                     let divided = +array[mustRun-1] / +array[mustRun+1];
+
                     array.splice(mustRun-1, 3, divided);
 
+            }
             }
             
         }
@@ -391,6 +439,14 @@ line-height: 50px;
         return array
     }
 
+
+
+
+
+
+
+
+
         function handleClick(){
             
             const chosenPad = event.target;
@@ -405,6 +461,7 @@ line-height: 50px;
                 if(chosenPad.getAttribute("id") != "result"){
                     
                         if(num != []){
+
                             if(isNaN(num[num.length-1]) && isNaN(chosenPad.textContent)){
                                 
                         
@@ -414,6 +471,15 @@ line-height: 50px;
                        if(num == [] && isNaN(chosenPad.textContent)){
                             return
                         }
+
+                        if(num[num.length-1] == "/" && chosenPad.textContent == "0"){
+                            num = [];
+                            screenyBabe.textContent = "?!?§?§§,!§?::";
+                            mem.textContent = "";
+                            destruct();
+                            return
+                        }
+                        else{
                     num.push(chosenPad.textContent);
                     console.log(num);
                     
@@ -433,12 +499,12 @@ line-height: 50px;
                         
                     }
                 }
-               
+            }      
                 else if(chosenPad.getAttribute("id") == "result"){
                     total = operate(num);
                     console.log(total);
-                    
-                    screenyBabe.textContent = +total;
+                    result = total[0];
+                    screenyBabe.textContent = parseFloat(result.toFixed(4));
                 }
 
             }
@@ -450,5 +516,24 @@ line-height: 50px;
         
 
         document.addEventListener("click", handleClick.bind(event, num, total));
-       </script>
+      
+      function destruct(){
+          console.log("destruction");
+         let nodelist = document.querySelectorAll("div");
+            for(let i = 0; i < nodelist.length; i++){
+                let time = Math.random();
+              nodelist[i].style.animation=`destruction ${time}s  linear infinite`;
+                
+      }
+
+      let bg = document.querySelector("#body-container");
+      bg.style.animation="destruction2 0.2s linear infinite";
+
+    }
+      
+      
+      
+      
+      
+      </script>
 </html>
